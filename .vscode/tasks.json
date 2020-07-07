@@ -1,0 +1,48 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile Assembly",
+            "type": "shell",
+            "command": "${workspaceRoot}\\project\\bin\\sjasmplus ${workspaceRoot}\\project\\src\\main.asm --zxnext=cspect --msg=all --fullpath --lst",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": {
+                "fileLocation": "autoDetect",
+                "pattern": {
+                    "regexp": "^(.*)\\(([0-9]+)\\): (error|warning):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "severity": 3,
+                    "message": 4
+                }
+            }
+        },
+        {
+            "label": "Update SDCard",
+            "type": "shell",
+            "command": "${workspaceRoot}\\project\\bin\\hdfmonkey put ${workspaceRoot}\\sdcard\\cspect-next-2gb.img project.nex",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Launch CSpect",
+            "type": "shell",
+            "command": "${workspaceRoot}\\project\\bin\\CSpect.exe -60 -tv -w4 -r -s14 -esc -brk -basickeys -zxnext -nextrom -map=${workspaceRoot}\\project.map -mmc=${workspaceRoot}\\sdcard\\cspect-next-2gb.img",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Compile Assembly",
+                "Update SDCard"
+            ]
+            
+        }
+    ]
+}
